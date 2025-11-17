@@ -18,6 +18,7 @@ mongoose
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  refreshToken: String,
 });
 
 const User = mongoose.model("User", userSchema);
@@ -31,8 +32,8 @@ app.post("/api/user/signup", async (req, res) => {
     if (userExists) {
       return res.status(301).json({
         data: [],
-        message: 'user exists'
-      })
+        message: "user exists",
+      });
     }
 
     const newUser = new User({ username, password: hashedPass });
@@ -72,16 +73,21 @@ app.post("/api/user/login", async (req, res) => {
     const payload = {
       id: user._id,
       username: user.username,
-      password: user.password
     };
 
-    const token = jwt.sign(payload, process.env.SECRET_JWT, {
-      expiresIn: "1h",
+    // accessToken
+    const accessToken = jwt.sign(payload, process.env.SECRET_JWT_ACCESS, {
+      expiresIn: "10s",
     });
 
-    res.status(200).json({
-      token,
+    // refreshToken
+    const refreshToken = jwt.sign(payload, process.env.SECRET_JWT_REFRESH, {
+      expiresIn: "7d",
     });
+    user.refreshToken = refreshToken;
+    await user.save();
+
+    res.status(200).json({ accessToken, refreshToken });
   } catch (error) {
     console.log(error);
     return res.status(401).json({
@@ -90,6 +96,33 @@ app.post("/api/user/login", async (req, res) => {
     });
   }
 });
+
+app.post("/api/token", async (req, res) => {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) return res.status(401).json({ message: "No token" });
+
+  // پیدا کردن یوزر
+  const user = await User.findOne({ refreshToken });
+  if (!user) return res.status(403).json({ message: "Invalid refresh token" });
+
+  try {
+    const payload = jwt.verify(refreshToken, process.env.SECRET_JWT_REFRESH);
+
+    // تولید Access Token جدید
+    const accessToken = jwt.sign(
+      { id: user._id, username: user.username },
+      process.env.SECRET_JWT_ACCESS,
+      { expiresIn: "15m" }
+    );
+
+    res.json({ accessToken });
+  } catch (err) {
+    res.status(403).json({ message: "Refresh token expired" });
+  }
+});
+
+
 
 const authenticationJWT = (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -101,7 +134,7 @@ const authenticationJWT = (req, res, next) => {
   const token = authHeader.split(" ")[1];
   try {
     // verify toke
-    const decode = jwt.verify(token, process.env.SECRET_JWT);
+    const decode = jwt.verify(token, process.env.SECRET_JWT_ACCESS);
     req.user = decode;
     next();
   } catch (error) {
