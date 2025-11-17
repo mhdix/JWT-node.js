@@ -1,0 +1,27 @@
+POST http://localhost:5000/api/user/signup
+Content-Type: application/json
+
+{
+    "username": "mmm",
+    "password" : "1234"
+}
+
+###
+POST http://localhost:5000/api/user/login
+Content-Type: application/json
+
+{
+    "username": "mmm",
+    "password" : "1234"
+}
+
+
+
+###
+GET http://localhost:5000/api/user/profile
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MWFkYTg1ZDM0NzMyOGIyMmFiNGRlZSIsInVzZXJuYW1lIjoibW1tIiwicGFzc3dvcmQiOiIkMmIkMTAka3JqTVdhN2t1LnNtYjZBV0xvMFExZWVPaFJKL25pWkJSQ1lZaWtielo1RVpJREs2YTk5YUsiLCJpYXQiOjE3NjMzNzA1MDIsImV4cCI6MTc2MzM3NDEwMn0.z_Pu_fIgFkgfMBWccncuEiVWCPWSAuO46wkVFCIgNpY
+
+###
+GET http://localhost:5000/api/user/posts
+

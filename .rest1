@@ -1,0 +1,28 @@
+POST http://localhost:5000/api/user/signup
+Content-Type: application/json
+
+{
+  "username": "mahdi",
+  "role": "admin",
+  "password": "123456"
+}
+
+###
+POST http://localhost:5000/api/user/login
+Content-Type: application/json
+
+{
+    "username" : "mmm",
+    "password": "1234"
+}
+
+###
+GET http://localhost:5000/api/user/admin
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MWFiYTgyMjJiZTdmODEzMzRmN2VkZiIsInVzZXJuYW1lIjoibW1tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzYzMzYwMDQyLCJleHAiOjE3NjMzNjM2NDJ9.TgX7mAfdPUfhmH4yyd-qafN6QM-yZED9KkvG4SBgU2o
+
+###
+GET http://localhost:5000/api/user/profile
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MWFiYTgyMjJiZTdmODEzMzRmN2VkZiIsInVzZXJuYW1lIjoibW1tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzYzMzYwMDQyLCJleHAiOjE3NjMzNjM2NDJ9.TgX7mAfdPUfhmH4yyd-qafN6QM-yZED9KkvG4SBgU2o
+
